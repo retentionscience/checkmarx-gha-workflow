@@ -14,7 +14,7 @@ on:
       params:
         required: false
         type: string
-        default: --cx-flow.filterSeverity --cx-flow.filterCategory
+        default: --cx-flow.filterSeverity --cx-flow.filterCategory --cx-flow.thresholds.high=0 --cx-flow.thresholds.medium=0 --cx-flow.thresholds.low=0 --sca.filter-score=11
 
 
 jobs:
