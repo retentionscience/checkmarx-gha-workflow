@@ -39,7 +39,7 @@ jobs:
           find . -name __tests__ -o -name __mocks__ -print0 | xargs -0 rm -rf
           if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
 
-      - name: Checkmarx SAST Scan
+      - name: Checkmarx CxFlow Action
         uses: checkmarx-ts/checkmarx-cxflow-github-action@v1.5
         with:
           team: ${{ secrets.CHECKMARX_TEAM }}
@@ -52,32 +52,11 @@ jobs:
           sca_username: ${{ secrets.CHECKMARX_SCA_USERNAME }}
           sca_tenant: ${{ secrets.CHECKMARX_SCA_TENANT }}
           incremental: false
-          scanners: sast
-          break_build: true
-          bug_tracker: GITHUBPULL
-          params: --sca.team=${{ secrets.CHECKMARX_TEAM }} --namespace=${{ github.repository_owner }}  --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} ${{ inputs.params }}
-          java_opts: -Xmx4g
-
-      - name: Checkmarx SCA Scan
-        continue-on-error: true
-        uses: checkmarx-ts/checkmarx-cxflow-github-action@v1.5
-        with:
-          team: ${{ secrets.CHECKMARX_TEAM }}
-          project: ${{ inputs.project }}
-          checkmarx_url: ${{ inputs.checkmarx_url }}
-          checkmarx_client_secret: ${{ secrets.CHECKMARX_CLIENT_SECRET }}
-          checkmarx_password: ${{ secrets.CHECKMARX_PASSWORD }}
-          checkmarx_username: ${{ secrets.CHECKMARX_USERNAME }}
-          sca_password: ${{ secrets.CHECKMARX_SCA_PASSWORD }}
-          sca_username: ${{ secrets.CHECKMARX_SCA_USERNAME }}
-          sca_tenant: ${{ secrets.CHECKMARX_SCA_TENANT }}
-          incremental: false
-          scanners: sca
+          scanners: sast, sca
           break_build: false
           bug_tracker: GITHUBPULL
           params: --sca.team=${{ secrets.CHECKMARX_TEAM }} --namespace=${{ github.repository_owner }}  --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} ${{ inputs.params }}
-          java_opts: -Xmx4g
-            
             #params: --sca.team=${{ secrets.CHECKMARX_TEAM }} --namespace=${{ github.repository_owner }}  --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} --cx-flow.filterSeverity --cx-flow.filterCategory
+          java_opts: -Xmx4g
 #--logging.level.com.checkmarx.flow.custom=debug --logging.level.com.checkmarx.flow.service=debug --logging.level.com.checkmarx.flow.utils=debug --logging.level.com.checkmarx.sdk.service=debug
 # --github.threshold.high=0 --github.threshold.medium=0 --github.threshold.low=0
