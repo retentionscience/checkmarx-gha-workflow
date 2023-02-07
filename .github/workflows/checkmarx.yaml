@@ -14,7 +14,7 @@ on:
       params:
         required: false
         type: string
-        default: --cx-flow.filterSeverity --cx-flow.filterCategory --cx-flow.thresholds.high=0 --cx-flow.thresholds.medium=0 --cx-flow.thresholds.low=0 --sca.thresholds-score=11
+        default: --cx-flow.filterSeverity --cx-flow.filterCategory --cx-flow.thresholds.high=0 --cx-flow.thresholds.medium=0 --cx-flow.thresholds.low=0 --sca.filter-score=11
 
 
 jobs:
@@ -53,7 +53,7 @@ jobs:
           sca_tenant: ${{ secrets.CHECKMARX_SCA_TENANT }}
           incremental: false
           scanners: sast, sca
-          break_build: false
+          break_build: true
           bug_tracker: GITHUBPULL
           params: --sca.team=${{ secrets.CHECKMARX_TEAM }} --namespace=${{ github.repository_owner }}  --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} ${{ inputs.params }}
             #params: --sca.team=${{ secrets.CHECKMARX_TEAM }} --namespace=${{ github.repository_owner }}  --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} --cx-flow.filterSeverity --cx-flow.filterCategory
