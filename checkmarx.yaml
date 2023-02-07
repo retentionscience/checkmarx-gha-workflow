@@ -1,4 +1,4 @@
-name: Checkmarx
+name: Checkmarx Scans
 
 on:
   pull_request:
