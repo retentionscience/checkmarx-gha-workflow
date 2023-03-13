@@ -11,10 +11,29 @@ on:
         required: false
         type: string
         default: https://ctct.checkmarx.net
-      params:
+      incremental:
+        required: false
+        type: string
+        default: false
+      scanners:
+        required: false
+        type: string
+        default: sast, sca
+      break_build:
+        required: false
+        type: string
+        default: true
+      bug_tracker:
+        required: false
+        type: string
+        default: GITHUBPULL
+      filter_params:
         required: false
         type: string
         default: --cx-flow.filterSeverity --cx-flow.filterCategory --cx-flow.thresholds.high=0 --cx-flow.thresholds.medium=0 --cx-flow.thresholds.low=0 --sca.thresholds-score=11
+      params:
+        required: false
+        type: string
 
 
 jobs:
@@ -51,11 +70,11 @@ jobs:
           sca_password: ${{ secrets.CHECKMARX_SCA_PASSWORD }}
           sca_username: ${{ secrets.CHECKMARX_SCA_USERNAME }}
           sca_tenant: ${{ secrets.CHECKMARX_SCA_TENANT }}
-          incremental: false
-          scanners: sast, sca
-          break_build: true
-          bug_tracker: GITHUBPULL
-          params: --sca.team=${{ secrets.CHECKMARX_TEAM }} --namespace=${{ github.repository_owner }}  --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} ${{ inputs.params }}
+          incremental: ${{ inputs.incremental }}
+          scanners: ${{ inputs.scanners }}
+          break_build: ${{ inputs.break_build }}
+          bug_tracker: ${{ inputs.bug_tracker }}
+          params: --sca.team=${{ secrets.CHECKMARX_TEAM }} --namespace=${{ github.repository_owner }}  --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} ${{ inputs.filter_params }} ${{ inputs.params }}
             #params: --sca.team=${{ secrets.CHECKMARX_TEAM }} --namespace=${{ github.repository_owner }}  --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} --cx-flow.filterSeverity --cx-flow.filterCategory
           java_opts: -Xmx4g
 #--logging.level.com.checkmarx.flow.custom=debug --logging.level.com.checkmarx.flow.service=debug --logging.level.com.checkmarx.flow.utils=debug --logging.level.com.checkmarx.sdk.service=debug
