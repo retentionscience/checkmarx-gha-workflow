@@ -1,0 +1,15 @@
+# There is no actual code in this repo, so the scans are worthless.  
+# This is for testing that calling this action works.
+#
+name: Test Checkmarx
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  checkmarx:
+    uses: retentionscience/checkmarx-gha-workflow/.github/workflows/checkmarx.yaml@main
+    secrets: inherit
+    with:
+      params: --enable-zip-scan --include-sources
