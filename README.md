@@ -1,5 +1,7 @@
 Reusable workflows
 
+** THIS IS A PUBLIC REPO - Keep this in mind **
+
 This re-usable workflow makes it easier to add Checkmarx scanning to your repo.
 Ensure CHECKMARX_TEAM is set in your repo via Terraform and cp checkmarx.yaml
 to your repo's .github/workflows/.  It will fire on new PRs.
@@ -25,5 +27,5 @@ jobs:
     uses: retentionscience/checkmarx-gha-workflow/.github/workflows/checkmarx.yaml@main
     secrets: inherit
     with:
-      params: --enable-zip-scan --include-sources
+      params: --enable-zip-scan --include-sources --github
 ```
