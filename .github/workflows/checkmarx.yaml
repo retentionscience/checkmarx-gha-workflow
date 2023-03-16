@@ -23,10 +23,6 @@ on:
         required: false
         type: string
         default: true
-      github_token:
-        required: false
-        type: string
-        default: ${{secrets.GITHUB_TOKEN}}
       bug_tracker:
         required: false
         type: string
@@ -62,6 +58,17 @@ jobs:
           find . -name __tests__ -o -name __mocks__ -print0 | xargs -0 rm -rf
           if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
 
+      - name: Figure out Github Token
+        id: github_token
+        run: |
+          if [[ "${{ inputs.params }}" =~ "include-sources=true" ]];then
+            echo "Using checkmarx's github token"
+            echo "token=${{ secrets.CHECKMARX_GITHUB_TOKEN }}" >> $GITHUB_OUTPUT
+          else
+            echo "Using default github token"
+            echo "token=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_OUTPUT
+          fi
+
       - name: Checkmarx CxFlow Action
         uses: checkmarx-ts/checkmarx-cxflow-github-action@v1.5
         with:
@@ -78,6 +85,6 @@ jobs:
           scanners: ${{ inputs.scanners }}
           break_build: ${{ inputs.break_build }}
           bug_tracker: ${{ inputs.bug_tracker }}
-          github_token: ${{ inputs.github_token }}
+          github_token: ${{ steps.github_token.outputs.token }}
           params: --sca.team=${{ secrets.CHECKMARX_TEAM }} --namespace=${{ github.repository_owner }}  --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} ${{ inputs.filter_params }} ${{ inputs.params }}
           java_opts: -Xmx4g
