@@ -26,7 +26,6 @@ on:
       github_token:
         required: false
         type: string
-        default: _NONE_SET_
       bug_tracker:
         required: false
         type: string
