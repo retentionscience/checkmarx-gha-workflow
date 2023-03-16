@@ -64,8 +64,10 @@ jobs:
       - name: Figure out Github Token
         run: |
           if [ -n "${{ inputs.github_token }}" ];then
+            echo "Using caller's token"
             echo "MY_GITHUB_TOKEN=${{ inputs.github_token }}" >> .env
           else
+            echo "Using default github token"
             echo "MY_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> .env
           fi
 
