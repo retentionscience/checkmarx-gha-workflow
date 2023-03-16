@@ -23,9 +23,6 @@ on:
         required: false
         type: string
         default: true
-      github_token:
-        required: false
-        type: string
       bug_tracker:
         required: false
         type: string
@@ -63,9 +60,9 @@ jobs:
 
       - name: Figure out Github Token
         run: |
-          if [ -n "${{ inputs.github_token }}" ];then
-            echo "Using caller's token"
-            echo "MY_GITHUB_TOKEN=${{ inputs.github_token }}" >> .env
+          if [[ "${{ input.params }}" =~ "include-sources=true" ];then
+            echo "Using checkmarx's github token"
+            echo "MY_GITHUB_TOKEN=${{ secrets.CHECKMARX_GITHUB_TOKEN }}" >> .env
           else
             echo "Using default github token"
             echo "MY_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> .env
