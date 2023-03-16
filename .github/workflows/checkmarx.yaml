@@ -62,11 +62,11 @@ jobs:
           if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
 
       - name: Figure out Github Token
-        if: inputs.github_token
-        run: echo "MY_GITHUB_TOKEN=${{ inputs.github_token }}"
+        if: github.event.inputs.github_token
+        run: echo "MY_GITHUB_TOKEN=${{ inputs.github_token }}" >> .env
       - name: Figure out Github Token
-        if: ! inputs.github_token
-        run: echo "MY_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}"
+        if: ! github.event.inputs.github_token
+        run: echo "MY_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> .env
 
       - name: Checkmarx CxFlow Action
         uses: checkmarx-ts/checkmarx-cxflow-github-action@v1.5
