@@ -23,6 +23,10 @@ on:
         required: false
         type: string
         default: true
+      github_token:
+        required: false
+        type: string
+        default: ${{secrets.GITHUB_TOKEN}}
       bug_tracker:
         required: false
         type: string
@@ -74,6 +78,6 @@ jobs:
           scanners: ${{ inputs.scanners }}
           break_build: ${{ inputs.break_build }}
           bug_tracker: ${{ inputs.bug_tracker }}
-          github_token: ${{secrets.GITHUB_TOKEN}}
+          github_token: ${{ inputs.github_token }}
           params: --sca.team=${{ secrets.CHECKMARX_TEAM }} --namespace=${{ github.repository_owner }}  --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} ${{ inputs.filter_params }} ${{ inputs.params }}
           java_opts: -Xmx4g

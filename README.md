@@ -18,6 +18,7 @@ This workflow accepts the following optional inputs with their default values:
   - params: _none_
   - project: ${{ github.repository }}-PR
   - scanners: sast, sca
+  - github_token: the default GHA token
 
 As an example, if you wanted zip sources, you could pass the optional parameters to cxflow:
 
@@ -28,4 +29,5 @@ jobs:
     secrets: inherit
     with:
       params: --enable-zip-scan --include-sources --github
+      github_token: ${{ secrets.CHECKMARX_GITHUB_TOKEN }}
 ```
