@@ -60,7 +60,7 @@ jobs:
 
       - name: Figure out Github Token
         run: |
-          if [[ "${{ github.event.inputs.params }}" =~ "include-sources=true" ]];then
+          if [[ "${{ inputs.params }}" =~ "include-sources=true" ]];then
             echo "Using checkmarx's github token"
             echo "MY_GITHUB_TOKEN=${{ secrets.CHECKMARX_GITHUB_TOKEN }}" >> .env
           else
