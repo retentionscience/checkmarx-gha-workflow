@@ -61,6 +61,13 @@ jobs:
           find . -name __tests__ -o -name __mocks__ -print0 | xargs -0 rm -rf
           if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
 
+      - name: Figure out Github Token
+        if: inputs.github_token
+        run: echo "MY_GITHUB_TOKEN=${{ inputs.github_token }}"
+      - name: Figure out Github Token
+        if: ! inputs.github_token
+        run: echo "MY_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}"
+
       - name: Checkmarx CxFlow Action
         uses: checkmarx-ts/checkmarx-cxflow-github-action@v1.5
         with:
@@ -77,6 +84,6 @@ jobs:
           scanners: ${{ inputs.scanners }}
           break_build: ${{ inputs.break_build }}
           bug_tracker: ${{ inputs.bug_tracker }}
-          github_token: ${{ inputs.github_token }}
+          github_token: ${{ env.MY_GITHUB_TOKEN }}
           params: --sca.team=${{ secrets.CHECKMARX_TEAM }} --namespace=${{ github.repository_owner }}  --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} ${{ inputs.filter_params }} ${{ inputs.params }}
           java_opts: -Xmx4g
