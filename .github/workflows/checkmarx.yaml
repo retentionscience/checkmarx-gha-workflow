@@ -70,7 +70,7 @@ jobs:
           fi
 
       - name: Checkmarx CxFlow Action
-        uses: retentionscience/checkmarx-cxflow-github-action@HEAD
+        uses: checkmarx-ts/checkmarx-cxflow-github-action@v1.5
         with:
           team: ${{ secrets.CHECKMARX_TEAM }}
           project: ${{ inputs.project }}
