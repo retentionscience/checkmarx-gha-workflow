@@ -59,7 +59,7 @@ jobs:
           if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
 
       - name: Checkmarx CxFlow Action
-        uses: retentionscience/checkmarx-cxflow-github-action@master
+        uses: checkmarx-ts/checkmarx-cxflow-github-action@v1.5
         with:
           team: ${{ secrets.CHECKMARX_TEAM }}
           project: ${{ inputs.project }}
