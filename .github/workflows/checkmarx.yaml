@@ -50,7 +50,8 @@ jobs:
 
       - name: Verify environment
         run: |
-          if [ "${{ secrets.CHECKMARX_TEAM }}" == '' ]; then echo "Error: CHECKMARX_TEAM was not set"; exit 1; fi
+          if [ "${{ vars.CHECKMARX_TEAM }}" == '' ]; then echo "Error: CHECKMARX_TEAM was not set"; exit 1; fi
+          echo "${{ vars.CHECKMARX_TEAM }}"
 
       - name: Remove unneeded files
         run: |
@@ -72,19 +73,19 @@ jobs:
       - name: Checkmarx CxFlow Action
         uses: retentionscience/checkmarx-cxflow-github-action@HEAD
         with:
-          team: ${{ secrets.CHECKMARX_TEAM }}
+          team: ${{ vars.CHECKMARX_TEAM }}
           project: ${{ inputs.project }}
           checkmarx_url: ${{ inputs.checkmarx_url }}
           checkmarx_client_secret: ${{ secrets.CHECKMARX_CLIENT_SECRET }}
           checkmarx_password: ${{ secrets.CHECKMARX_PASSWORD }}
-          checkmarx_username: ${{ secrets.CHECKMARX_USERNAME }}
+          checkmarx_username: ${{ vars.CHECKMARX_USERNAME }}
           sca_password: ${{ secrets.CHECKMARX_SCA_PASSWORD }}
-          sca_username: ${{ secrets.CHECKMARX_SCA_USERNAME }}
-          sca_tenant: ${{ secrets.CHECKMARX_SCA_TENANT }}
+          sca_username: ${{ vars.CHECKMARX_SCA_USERNAME }}
+          sca_tenant: ${{ vars.CHECKMARX_SCA_TENANT }}
           incremental: ${{ inputs.incremental }}
           scanners: ${{ inputs.scanners }}
           break_build: ${{ inputs.break_build }}
           bug_tracker: ${{ inputs.bug_tracker }}
           github_token: ${{ steps.github_token.outputs.token }}
-          params: --sca.team=${{ secrets.CHECKMARX_TEAM }} --namespace=${{ github.repository_owner }}  --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} ${{ inputs.filter_params }} ${{ inputs.params }}
+          params: --sca.team=${{ vars.CHECKMARX_TEAM }} --namespace=${{ github.repository_owner }}  --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} ${{ inputs.filter_params }} ${{ inputs.params }}
           java_opts: -Xmx4g
