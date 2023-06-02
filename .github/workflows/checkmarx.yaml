@@ -71,7 +71,7 @@ jobs:
           fi
 
       - name: Checkmarx CxFlow Action
-        uses: checkmarx-ts/checkmarx-cxflow-github-action@HEAD
+        uses: retentionscience/checkmarx-cxflow-github-action@HEAD
         with:
           team: ${{ vars.CHECKMARX_TEAM }}
           project: ${{ inputs.project }}
