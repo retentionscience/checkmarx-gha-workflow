@@ -29,3 +29,5 @@ jobs:
     with:
       params: --enable-zip-scan=true --include-sources=true --github
 ```
+
+For Checkmarx testing, specify the `debug` branch instead of `main`.
