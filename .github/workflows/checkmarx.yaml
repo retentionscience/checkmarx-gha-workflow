@@ -93,21 +93,20 @@ jobs:
           java_opts: -Xmx4g
 
 
-    - name: Setup Scala
-      if: "${{ inputs.localsca }}" == "true"
-      uses: retentionscience/setup-scala@v14
-      with:
-        java-version: adopt@1.8
+      - name: Setup Scala
+        if: "${{ inputs.localsca }}" == "true"
+        uses: retentionscience/setup-scala@v14
+        with:
+          java-version: adopt@1.8
 
-    - name: Install python virtualenv
-      if: "${{ inputs.localsca }}" == "true"
-      run: python3 -m pip install virtualenv
+      - name: Install python virtualenv
+        if: "${{ inputs.localsca }}" == "true"
+        run: python3 -m pip install virtualenv
 
-    - name: SCA Resolver
-      if: "${{ inputs.localsca }}" == "true"
-      run: |
-          mkdir ${{ github.workspace }}/SCAResolver
-          wget --quiet "https://sca-downloads.s3.amazonaws.com/cli/latest/ScaResolver-linux64.tar.gz"
-          tar -xvf ScaResolver-linux64.tar.gz -C ${{ github.workspace }}/SCAResolver
-          ${{ github.workspace }}/SCAResolver/ScaResolver -s ${{ github.workspace }} -n ${{ inputs.project }} -a ${{ vars.CHECKMARX_SCA_TENANT }} -u ${{ vars.CHECKMARX_SCA_USERNAME }} -p ${{ secrets.CHECKMARX_SCA_PASSWORD }} --log-level 'Verbose'
-
+      - name: SCA Resolver
+        if: "${{ inputs.localsca }}" == "true"
+        run: |
+            mkdir ${{ github.workspace }}/SCAResolver
+            wget --quiet "https://sca-downloads.s3.amazonaws.com/cli/latest/ScaResolver-linux64.tar.gz"
+            tar -xvf ScaResolver-linux64.tar.gz -C ${{ github.workspace }}/SCAResolver
+            ${{ github.workspace }}/SCAResolver/ScaResolver -s ${{ github.workspace }} -n ${{ inputs.project }} -a ${{ vars.CHECKMARX_SCA_TENANT }} -u ${{ vars.CHECKMARX_SCA_USERNAME }} -p ${{ secrets.CHECKMARX_SCA_PASSWORD }} --log-level 'Verbose'
