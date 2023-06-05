@@ -41,7 +41,7 @@ on:
 
 
 jobs:
-  test:
+  checkmarx:
     name: Checkmarx
     runs-on: [self-hosted]
     concurrency:
@@ -52,7 +52,7 @@ jobs:
         with:
           ref: ${{ github.event.client_payload.pull_request.head.sha }}
 
-      - name: Verify and set up environment
+      - name: Verify and configure environment
         id: setup_env
         run: |
           if [ "${{ vars.CHECKMARX_TEAM }}" == '' ]; then echo "Error: CHECKMARX_TEAM was not set"; exit 1; fi
@@ -92,6 +92,31 @@ jobs:
           params: --sca.team=${{ vars.CHECKMARX_TEAM }} --namespace=${{ github.repository_owner }}  --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} ${{ inputs.filter_params }} ${{ inputs.params }}
           java_opts: -Xmx4g
 
+  sca:
+    name: Checkmarx SCA (local)
+    if: ${{ inputs.localsca == "true" }}
+    runs-on: [self-hosted]
+    concurrency:
+      group: checkmarx
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.client_payload.pull_request.head.sha }}
+
+      - name: Verify and configure environment
+        id: setup_env
+        run: |
+          if [ "${{ vars.CHECKMARX_TEAM }}" == '' ]; then echo "Error: CHECKMARX_TEAM was not set"; exit 1; fi
+          echo "${{ vars.CHECKMARX_TEAM }}"
+          projname=$(echo ${{ inputs.project }} | tr / -); echo "projname=$projname" >> $GITHUB_OUTPUT
+
+      - name: Remove unneeded files
+        run: |
+          rm -rf db spec script/data_migrations ./public/images/seconds_animated_60.gif test tests
+          find . -name __tests__ -o -name __mocks__ -print0 | xargs -0 rm -rf
+          if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
+
       - name: Setup Scala
         uses: retentionscience/setup-scala@v14
         with:
@@ -105,4 +130,4 @@ jobs:
             mkdir ${{ github.workspace }}/SCAResolver
             wget --quiet "https://sca-downloads.s3.amazonaws.com/cli/latest/ScaResolver-linux64.tar.gz"
             tar -xvf ScaResolver-linux64.tar.gz -C ${{ github.workspace }}/SCAResolver
-            ${{ github.workspace }}/SCAResolver/ScaResolver -s ${{ github.workspace }} -n ${{ inputs.project }} -a ${{ vars.CHECKMARX_SCA_TENANT }} -u ${{ vars.CHECKMARX_SCA_USERNAME }} -p ${{ secrets.CHECKMARX_SCA_PASSWORD }} --log-level 'Verbose'
+            ${{ github.workspace }}/SCAResolver/ScaResolver -s ${{ github.workspace }} -n ${{ steps.setup_env.outputs.projname }} -a ${{ vars.CHECKMARX_SCA_TENANT }} -u ${{ vars.CHECKMARX_SCA_USERNAME }} -p ${{ secrets.CHECKMARX_SCA_PASSWORD }} --log-level 'Verbose'
