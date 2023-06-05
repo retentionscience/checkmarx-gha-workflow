@@ -93,7 +93,7 @@ jobs:
           java_opts: -Xmx4g
 
   sca:
-    name: Checkmarx SCA (local)
+    name: Checkmarx SCA local
     if: ${{ inputs.localsca == "true" }}
     runs-on: [self-hosted]
     concurrency:
