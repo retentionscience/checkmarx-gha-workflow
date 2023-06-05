@@ -92,19 +92,15 @@ jobs:
           params: --sca.team=${{ vars.CHECKMARX_TEAM }} --namespace=${{ github.repository_owner }}  --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} ${{ inputs.filter_params }} ${{ inputs.params }}
           java_opts: -Xmx4g
 
-
       - name: Setup Scala
-        if: "${{ inputs.localsca }}" == "true"
         uses: retentionscience/setup-scala@v14
         with:
           java-version: adopt@1.8
 
       - name: Install python virtualenv
-        if: "${{ inputs.localsca }}" == "true"
         run: python3 -m pip install virtualenv
 
       - name: SCA Resolver
-        if: "${{ inputs.localsca }}" == "true"
         run: |
             mkdir ${{ github.workspace }}/SCAResolver
             wget --quiet "https://sca-downloads.s3.amazonaws.com/cli/latest/ScaResolver-linux64.tar.gz"
