@@ -1,0 +1,113 @@
+name: Run Checkmarx
+
+on:
+  workflow_call:
+    inputs:
+      project:
+        required: false
+        type: string
+        default: ${{ github.repository }}-PR
+      checkmarx_url:
+        required: false
+        type: string
+        default: https://ctct.checkmarx.net
+      incremental:
+        required: false
+        type: string
+        default: false
+      scanners:
+        required: false
+        type: string
+        default: sast, sca
+      break_build:
+        required: false
+        type: string
+        default: true
+      bug_tracker:
+        required: false
+        type: string
+        default: GITHUBPULL
+      filter_params:
+        required: false
+        type: string
+        default: --cx-flow.filterSeverity --cx-flow.filterCategory --cx-flow.thresholds.high=0 --cx-flow.thresholds.medium=0 --cx-flow.thresholds.low=0 --sca.thresholds-score=11
+      localsca:
+        required: false
+        type: boolean
+        default: false
+      params:
+        required: false
+        type: string
+
+
+jobs:
+  test:
+    name: Checkmarx
+    runs-on: [self-hosted]
+    concurrency:
+      group: checkmarx
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.client_payload.pull_request.head.sha }}
+
+      - name: Verify and set up environment
+        id: setup_env
+        run: |
+          if [ "${{ vars.CHECKMARX_TEAM }}" == '' ]; then echo "Error: CHECKMARX_TEAM was not set"; exit 1; fi
+          echo "${{ vars.CHECKMARX_TEAM }}"
+          projname=$(echo ${{ inputs.project }} | tr / -); echo "projname=$projname" >> $GITHUB_OUTPUT
+          if [[ "${{ inputs.params }}" =~ "include-sources=true" ]];then
+            echo "Using checkmarx's github token"
+            echo "github_token=${{ secrets.CHECKMARX_GITHUB_TOKEN }}" >> $GITHUB_OUTPUT
+          else
+            echo "Using default github token"
+            echo "github_token=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Remove unneeded files
+        run: |
+          rm -rf db spec script/data_migrations ./public/images/seconds_animated_60.gif test tests
+          find . -name __tests__ -o -name __mocks__ -print0 | xargs -0 rm -rf
+          if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
+
+
+      - name: Checkmarx CxFlow Action
+        uses: checkmarx-ts/checkmarx-cxflow-github-action@HEAD
+        with:
+          team: ${{ vars.CHECKMARX_TEAM }}
+          project: ${{ inputs.project }}
+          checkmarx_url: ${{ inputs.checkmarx_url }}
+          checkmarx_client_secret: ${{ secrets.CHECKMARX_CLIENT_SECRET }}
+          checkmarx_password: ${{ secrets.CHECKMARX_PASSWORD }}
+          checkmarx_username: ${{ vars.CHECKMARX_USERNAME }}
+          sca_password: ${{ secrets.CHECKMARX_SCA_PASSWORD }}
+          sca_username: ${{ vars.CHECKMARX_SCA_USERNAME }}
+          sca_tenant: ${{ vars.CHECKMARX_SCA_TENANT }}
+          incremental: ${{ inputs.incremental }}
+          scanners: ${{ inputs.scanners }}
+          break_build: ${{ inputs.break_build }}
+          bug_tracker: ${{ inputs.bug_tracker }}
+          github_token: ${{ steps.setup_env.outputs.github_token }}
+          params: --sca.team=${{ vars.CHECKMARX_TEAM }} --namespace=${{ github.repository_owner }}  --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} ${{ inputs.filter_params }} ${{ inputs.params }}
+          java_opts: -Xmx4g
+
+    - name: Setup Scala
+      if: ${{ inputs.localsca }}
+      uses: retentionscience/setup-scala@v14
+      with:
+        java-version: adopt@1.8
+    - name: Install python virtualenv
+      if: ${{ inputs.localsca }}
+      run: python3 -m pip install virtualenv
+
+
+    - name: SCA Resolver
+      if: ${{ inputs.localsca }}
+      run: |
+          mkdir ${{ github.workspace }}/SCAResolver
+          wget --quiet "https://sca-downloads.s3.amazonaws.com/cli/latest/ScaResolver-linux64.tar.gz"
+          tar -xvf ScaResolver-linux64.tar.gz -C ${{ github.workspace }}/SCAResolver
+          ${{ github.workspace }}/SCAResolver/ScaResolver -s ${{ github.workspace }} -n ${{ inputs.project }} -a ${{ vars.CHECKMARX_SCA_TENANT }} -u ${{ vars.CHECKMARX_SCA_USERNAME }} -p ${{ secrets.CHECKMARX_SCA_PASSWORD }} --log-level 'Verbose'
+
