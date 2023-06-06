@@ -97,7 +97,7 @@ jobs:
     if: ${{ inputs.localsca }}
     runs-on: [self-hosted]
     concurrency:
-      group: checkmarx
+      group: sca
     steps:
       - name: Checkout
         uses: actions/checkout@v3
