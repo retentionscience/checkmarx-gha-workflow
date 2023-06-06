@@ -65,6 +65,13 @@ jobs:
             echo "Using default github token"
             echo "github_token=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_OUTPUT
           fi
+          if [[ "{{ inputs.localsca }}" == "true" ];then
+            echo "localsca==true, so force scanners=sast"
+            echo "scanners=sast" >> $GITHUB_OUTPUT
+          else
+            echo "localsca==false, so pass through scanners"
+            echo "scanners=${{ inputs.scanners }}" >> $GITHUB_OUTPUT
+          fi
 
       - name: Remove unneeded files
         run: |
@@ -85,7 +92,7 @@ jobs:
           sca_username: ${{ vars.CHECKMARX_SCA_USERNAME }}
           sca_tenant: ${{ vars.CHECKMARX_SCA_TENANT }}
           incremental: ${{ inputs.incremental }}
-          scanners: ${{ inputs.scanners }}
+          scanners: ${{ steps.setup_env.outputs.scanners }}
           break_build: ${{ inputs.break_build }}
           bug_tracker: ${{ inputs.bug_tracker }}
           github_token: ${{ steps.setup_env.outputs.github_token }}
