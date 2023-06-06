@@ -65,7 +65,7 @@ jobs:
             echo "Using default github token"
             echo "github_token=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_OUTPUT
           fi
-          if [[ "${{ inputs.localsca }}" == "true" ];then
+          if [[ "${{ inputs.localsca }}" == "true" ]];then
             echo "localsca==true, so force scanners=sast"
             echo "scanners=sast" >> $GITHUB_OUTPUT
           else
