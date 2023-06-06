@@ -38,6 +38,10 @@ on:
       params:
         required: false
         type: string
+      scala_java_version:
+        required: false
+        type: string
+        default: adopt@1.8
 
 
 jobs:
@@ -77,7 +81,6 @@ jobs:
         run: |
           rm -rf db spec script/data_migrations ./public/images/seconds_animated_60.gif test tests
           find . -name __tests__ -o -name __mocks__ -print0 | xargs -0 rm -rf
-          if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
 
       - name: Checkmarx CxFlow Action
         uses: checkmarx-ts/checkmarx-cxflow-github-action@HEAD
@@ -122,15 +125,16 @@ jobs:
         run: |
           rm -rf db spec script/data_migrations ./public/images/seconds_animated_60.gif test tests
           find . -name __tests__ -o -name __mocks__ -print0 | xargs -0 rm -rf
-          if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
 
       - name: Setup Scala
         uses: retentionscience/setup-scala@v14
         with:
-          java-version: adopt@1.8
+          java-version: ${{ inputs.scala_java_version }}
 
       - name: Install python virtualenv
-        run: python3 -m pip install virtualenv
+        run: |
+          if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
+          python3 -m pip install virtualenv
 
       - name: SCA Resolver
         run: |
