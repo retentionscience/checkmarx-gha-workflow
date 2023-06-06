@@ -33,7 +33,7 @@ on:
         default: --cx-flow.filterSeverity --cx-flow.filterCategory --cx-flow.thresholds.high=0 --cx-flow.thresholds.medium=0 --cx-flow.thresholds.low=0 --sca.thresholds-score=11
       localsca:
         required: false
-        type: string
+        type: boolean
         default: false
       params:
         required: false
@@ -94,7 +94,7 @@ jobs:
 
   sca:
     name: Checkmarx SCA local
-    if: ${{ inputs.localsca == "true" }}
+    if: ${{ inputs.localsca }}
     runs-on: [self-hosted]
     concurrency:
       group: checkmarx
