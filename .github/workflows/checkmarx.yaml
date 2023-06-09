@@ -146,8 +146,10 @@ jobs:
             wget --quiet "https://sca-downloads.s3.amazonaws.com/cli/latest/ScaResolver-linux64.tar.gz"
             tar -xvf ScaResolver-linux64.tar.gz -C ${{ github.workspace }}/SCAResolver
             ${{ github.workspace }}/SCAResolver/ScaResolver -s ${{ github.workspace }} -n ${{ steps.setup_env.outputs.projname }} -a ${{ vars.CHECKMARX_SCA_TENANT }} -u ${{ vars.CHECKMARX_SCA_USERNAME }} -p ${{ secrets.CHECKMARX_SCA_PASSWORD }} -t ${{ vars.CHECKMARX_TEAM }} --log-level 'Verbose' ${{ inputs.sca_params }} 2>&1 | tee scaresolver.log
-            comment=$(cat scaresolver.log | sed -n '/### Scan Summary ###/,/^Full report available at/p')
+            comment=$(cat scaresolver.log | sed -n '/### Scan Summary ###/,/^Full report available at/p' | grep '####')
             echo 'sca-scan-summary<<EOF' >> $GITHUB_OUTPUT
+            echo '![Logo](https://user-images.githubusercontent.com/23239410/92153465-ff743900-ee2c-11ea-9c8d-8141e38feb41.png)' >> $GITHUB_OUTPUT
+            echo '**Checkmarx SCA - Scan Summary**' >> $GITHUB_OUTPUT
             echo "$comment" >> $GITHUB_OUTPUT
             echo 'EOF' >> $GITHUB_OUTPUT
             exit_code=${PIPESTATUS[0]}
