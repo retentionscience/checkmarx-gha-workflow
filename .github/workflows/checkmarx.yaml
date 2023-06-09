@@ -144,4 +144,4 @@ jobs:
             mkdir ${{ github.workspace }}/SCAResolver
             wget --quiet "https://sca-downloads.s3.amazonaws.com/cli/latest/ScaResolver-linux64.tar.gz"
             tar -xvf ScaResolver-linux64.tar.gz -C ${{ github.workspace }}/SCAResolver
-            ${{ github.workspace }}/SCAResolver/ScaResolver -s ${{ github.workspace }} -n ${{ steps.setup_env.outputs.projname }} -a ${{ vars.CHECKMARX_SCA_TENANT }} -u ${{ vars.CHECKMARX_SCA_USERNAME }} -p ${{ secrets.CHECKMARX_SCA_PASSWORD }} -t ${{ vars.CHECKMARX_TEAM }} --log-level 'Verbose' ${{ inputs.sca_params }}
+            ${{ github.workspace }}/SCAResolver/ScaResolver -s ${{ github.workspace }} -n ${{ steps.setup_env.outputs.projname }} -a ${{ vars.CHECKMARX_SCA_TENANT }} -u ${{ vars.CHECKMARX_SCA_USERNAME }} -p ${{ secrets.CHECKMARX_SCA_PASSWORD }} -t ${{ vars.CHECKMARX_TEAM }} --log-level 'Verbose' ${{ inputs.sca_params }} --report-extension Pdf --report-type Risk
