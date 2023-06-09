@@ -137,7 +137,7 @@ jobs:
 
       - name: Setup Scala
         if: steps.setup_env.outputs.build_sbt
-        uses: retentionscience/setup-scala@v14
+        uses: retentionscience/setup-scala@v10
         with:
           java-version: ${{ inputs.scala_java_version }}
 
