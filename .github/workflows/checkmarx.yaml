@@ -45,6 +45,10 @@ on:
       sca_params:
         required: false
         type: string
+      sca_log_level:
+        required: false
+        type: string
+        default: Verbose
 
 
 jobs:
@@ -145,7 +149,7 @@ jobs:
             mkdir ${{ github.workspace }}/SCAResolver
             wget --quiet "https://sca-downloads.s3.amazonaws.com/cli/latest/ScaResolver-linux64.tar.gz"
             tar -xvf ScaResolver-linux64.tar.gz -C ${{ github.workspace }}/SCAResolver
-            ${{ github.workspace }}/SCAResolver/ScaResolver -s ${{ github.workspace }} -n ${{ steps.setup_env.outputs.projname }} -a ${{ vars.CHECKMARX_SCA_TENANT }} -u ${{ vars.CHECKMARX_SCA_USERNAME }} -p ${{ secrets.CHECKMARX_SCA_PASSWORD }} -t ${{ vars.CHECKMARX_TEAM }} --log-level 'Verbose' ${{ inputs.sca_params }} 2>&1 | tee scaresolver.log
+            ${{ github.workspace }}/SCAResolver/ScaResolver -s ${{ github.workspace }} -n '${{ steps.setup_env.outputs.projname }}' -a '${{ vars.CHECKMARX_SCA_TENANT }}' -u '${{ vars.CHECKMARX_SCA_USERNAME }}' -p '${{ secrets.CHECKMARX_SCA_PASSWORD }}' -t '${{ vars.CHECKMARX_TEAM }}' --log-level '${{ inputs.sca_log_level }}' ${{ inputs.sca_params }} 2>&1 | tee scaresolver.log
             comment=$(cat scaresolver.log | sed -n '/### Scan Summary ###/,/^Full report available at/p' | grep -v '####')
             if [ -z "$comment" ];then
                comment="***SCA Resolver has probably failed.***"
