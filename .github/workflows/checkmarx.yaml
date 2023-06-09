@@ -147,9 +147,10 @@ jobs:
             tar -xvf ScaResolver-linux64.tar.gz -C ${{ github.workspace }}/SCAResolver
             ${{ github.workspace }}/SCAResolver/ScaResolver -s ${{ github.workspace }} -n ${{ steps.setup_env.outputs.projname }} -a ${{ vars.CHECKMARX_SCA_TENANT }} -u ${{ vars.CHECKMARX_SCA_USERNAME }} -p ${{ secrets.CHECKMARX_SCA_PASSWORD }} -t ${{ vars.CHECKMARX_TEAM }} --log-level 'Verbose' ${{ inputs.sca_params }} 2>&1 | tee scaresolver.log
             comment=$(cat scaresolver.log | sed -n '/### Scan Summary ###/,/^Full report available at/p' | grep -v '####')
-            echo 'sca-scan-summary<<EOF' >> $GITHUB_OUTPUT
             if [ -z "$comment" ];then
                comment="***SCA Resolver has probably failed.***"
+            fi
+            echo 'sca-scan-summary<<EOF' >> $GITHUB_OUTPUT
             echo "$comment" >> $GITHUB_OUTPUT
             echo 'EOF' >> $GITHUB_OUTPUT
             exit_code=${PIPESTATUS[0]}
