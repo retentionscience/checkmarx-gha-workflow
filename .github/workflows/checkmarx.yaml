@@ -127,7 +127,7 @@ jobs:
           if [ "${{ vars.CHECKMARX_TEAM }}" == '' ]; then echo "Error: CHECKMARX_TEAM was not set"; exit 1; fi
           echo "${{ vars.CHECKMARX_TEAM }}"
           projname=$(echo ${{ inputs.project }} | tr / -); echo "projname=$projname" >> $GITHUB_OUTPUT
-          ./grafana/pyproject.toml && make -C grafana compile
+          test -f ./grafana/pyproject.toml && make -C grafana compile
           test -f build.sbt && echo "build_sbt=true" >> $GITHUB_OUTPUT
 
       - name: Remove unneeded files
