@@ -127,6 +127,8 @@ jobs:
           if [ "${{ vars.CHECKMARX_TEAM }}" == '' ]; then echo "Error: CHECKMARX_TEAM was not set"; exit 1; fi
           echo "${{ vars.CHECKMARX_TEAM }}"
           projname=$(echo ${{ inputs.project }} | tr / -); echo "projname=$projname" >> $GITHUB_OUTPUT
+          ./grafana/pyproject.toml && make -C grafana compile
+          test -f build.sbt && echo "build_sbt=true" >> $GITHUB_OUTPUT
 
       - name: Remove unneeded files
         run: |
@@ -134,6 +136,7 @@ jobs:
           find . -name __tests__ -o -name __mocks__ -print0 | xargs -0 rm -rf
 
       - name: Setup Scala
+        if: steps.setup_env.outputs.build_sbt
         uses: retentionscience/setup-scala@v14
         with:
           java-version: ${{ inputs.scala_java_version }}
