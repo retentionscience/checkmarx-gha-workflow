@@ -127,7 +127,7 @@ jobs:
           if [ "${{ vars.CHECKMARX_TEAM }}" == '' ]; then echo "Error: CHECKMARX_TEAM was not set"; exit 1; fi
           echo "${{ vars.CHECKMARX_TEAM }}"
           projname=$(echo ${{ inputs.project }} | tr / -); echo "projname=$projname" >> $GITHUB_OUTPUT
-          test -f ./grafana/pyproject.toml && make -C grafana compile
+          test -f ./grafana/pyproject.toml && echo "build_poetry=true" >> $GITHUB_OUTPUT
           test -f build.sbt && echo "build_sbt=true" >> $GITHUB_OUTPUT
 
       - name: Remove unneeded files
@@ -140,6 +140,15 @@ jobs:
         uses: retentionscience/setup-scala@v14
         with:
           java-version: ${{ inputs.scala_java_version }}
+
+      - name: Setup Pyenv
+        if : steps.setup_env.outputs.build_poetry
+        id: setup-pyenv
+        uses: retentionscience/pyenv-action@v14
+      - name: Install poetry
+        if : steps.setup_env.outputs.build_poetry
+        id: setup-poetry
+        run: make -C grafana compile
 
       - name: Install python virtualenv
         run: |
