@@ -129,6 +129,7 @@ jobs:
           projname=$(echo ${{ inputs.project }} | tr / -); echo "projname=$projname" >> $GITHUB_OUTPUT
           test -f ./grafana/pyproject.toml && echo "build_poetry=true" >> $GITHUB_OUTPUT
           test -f build.sbt && echo "build_sbt=true" >> $GITHUB_OUTPUT
+          echo "Environment complete."
 
       - name: Remove unneeded files
         run: |
