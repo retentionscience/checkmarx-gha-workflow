@@ -25,6 +25,9 @@ This workflow accepts the following optional inputs with their default values:
   - project: ${{ github.repository }}-PR
   - scanners: sast, sca
   - localsca: false
+  - sca_log_level: Verbose (only used by localsca mode)
+  - sca_params: _none_ (only used by localsca mode)
+  - scala_java_version: adopt@1.8 (only used by localsca mode)
 
 As an example, if you wanted zip sources, you could pass the optional parameters to cxflow:
 
