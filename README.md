@@ -8,6 +8,12 @@ to your repo's .github/workflows/.  It will fire on new PRs.
 
 There are no required inputs. The default checkmark.yaml in this repo should work fine.
 
+This workflow works in two different modes: the default uses remote SCA, or
+with local SCA scanning. The default mode seems to be fine for most projects.
+The local SCA scanning is required for sbt and python projects that pull in
+local modules.  Simply pass `localsca: true` to enable local SCA scanning mode.
+
+
 This workflow accepts the following optional inputs with their default values:
 
   - break_build: false
@@ -18,6 +24,7 @@ This workflow accepts the following optional inputs with their default values:
   - params: _none_
   - project: ${{ github.repository }}-PR
   - scanners: sast, sca
+  - localsca: false
 
 As an example, if you wanted zip sources, you could pass the optional parameters to cxflow:
 
