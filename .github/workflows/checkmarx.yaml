@@ -174,8 +174,8 @@ jobs:
             mkdir ${{ github.workspace }}/SCAResolver
             wget --quiet "https://sca-downloads.s3.amazonaws.com/cli/latest/ScaResolver-linux64.tar.gz"
             tar -xvf ScaResolver-linux64.tar.gz -C ${{ github.workspace }}/SCAResolver
-            test -f scale_workers-code/Makefile && make -C scale_workers-code compile # FIXME special case for jefe-infrastructure
-            pipenv run ${{ github.workspace }}/SCAResolver/ScaResolver -s '${{ inputs.sca_scan_path }}' -n '${{ steps.setup_env.outputs.projname }}' -a '${{ vars.CHECKMARX_SCA_TENANT }}' -u '${{ vars.CHECKMARX_SCA_USERNAME }}' -p '${{ secrets.CHECKMARX_SCA_PASSWORD }}' -t '${{ vars.CHECKMARX_TEAM }}' --log-level '${{ inputs.sca_log_level }}' ${{ inputs.sca_params }} 2>&1 | tee scaresolver.log
+            test -f scale_workers-code/Makefile && cd scale_workers-code && make compile # FIXME special case for jefe-infrastructure
+            pipenv run ${{ github.workspace }}/SCAResolver/ScaResolver -s '.' -n '${{ steps.setup_env.outputs.projname }}' -a '${{ vars.CHECKMARX_SCA_TENANT }}' -u '${{ vars.CHECKMARX_SCA_USERNAME }}' -p '${{ secrets.CHECKMARX_SCA_PASSWORD }}' -t '${{ vars.CHECKMARX_TEAM }}' --log-level '${{ inputs.sca_log_level }}' ${{ inputs.sca_params }} 2>&1 | tee scaresolver.log
             comment=$(cat scaresolver.log | sed -n '/### Scan Summary ###/,/^Full report available at/p' | grep -v '####')
             if [ -z "$comment" ];then
                comment="***SCA Resolver has probably failed.***"
