@@ -144,7 +144,6 @@ jobs:
           echo "build_poetry_path=$build_poetry_path" >> $GITHUB_OUTPUT
           if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
           python3 -m pip install virtualenv
-          test -f scale_workers-code/Makefile && make -C scale_workers-code compile
           echo "Detected: build_python=$build_python build_poetry=$build_poetry build_poetry_path=$build_poetry_path build_sbt=$build_sbt"
           echo "Environment complete."
 
@@ -172,6 +171,7 @@ jobs:
       - name: SCA Resolver
         id: scaresolver
         run: |
+            test -f scale_workers-code/Makefile && make -C scale_workers-code compile
             mkdir ${{ github.workspace }}/SCAResolver
             wget --quiet "https://sca-downloads.s3.amazonaws.com/cli/latest/ScaResolver-linux64.tar.gz"
             tar -xvf ScaResolver-linux64.tar.gz -C ${{ github.workspace }}/SCAResolver
