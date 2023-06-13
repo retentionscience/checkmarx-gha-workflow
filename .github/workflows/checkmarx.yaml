@@ -131,8 +131,16 @@ jobs:
           if [ "${{ vars.CHECKMARX_TEAM }}" == '' ]; then echo "Error: CHECKMARX_TEAM was not set"; exit 1; fi
           echo "${{ vars.CHECKMARX_TEAM }}"
           projname=$(echo ${{ inputs.project }} | tr / -); echo "projname=$projname" >> $GITHUB_OUTPUT
-          test -f ./grafana/pyproject.toml && echo "build_poetry=true" >> $GITHUB_OUTPUT
           test -f build.sbt && echo "build_sbt=true" >> $GITHUB_OUTPUT
+          build_python=false
+          for a in Pipfile pyproject.toml */Pipfile */pyproject.toml;do test -f $a && build_python=true
+          echo "build_python=$build_python" >> $GITHUB_OUTPUT
+          build_poetry=false
+          for a in pyproject.toml */pyproject.toml */pyproject.toml;do test -f $a && grep tool.poetry $a && build_poetry=true
+          echo "build_poetry=$build_poetry" >> $GITHUB_OUTPUT
+          if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
+          python3 -m pip install virtualenv
+          echo "Detected: build_python=$build_python build_poetry=$build_poetry build_sbt=true"
           echo "Environment complete."
 
       - name: Remove unneeded files
@@ -147,18 +155,14 @@ jobs:
           java-version: ${{ inputs.scala_java_version }}
 
       - name: Setup Pyenv
-        if : steps.setup_env.outputs.build_poetry
+        if : steps.setup_env.outputs.build_python
         id: setup-pyenv
         uses: retentionscience/pyenv-action@v14
+
       - name: Install poetry
         if : steps.setup_env.outputs.build_poetry
         id: setup-poetry
         run: make -C grafana compile
-
-      - name: Install python virtualenv
-        run: |
-          if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
-          python3 -m pip install virtualenv
 
       - name: SCA Resolver
         id: scaresolver
