@@ -164,7 +164,7 @@ jobs:
       - name: Install poetry
         if: steps.setup_env.outputs.build_poetry
         id: setup-poetry
-        run: make -C {{ steps.setup_env.outputs.build_poetry_path }} compile
+        run: make -C ${{ steps.setup_env.outputs.build_poetry_path }} compile
 
       - name: SCA Resolver
         id: scaresolver
