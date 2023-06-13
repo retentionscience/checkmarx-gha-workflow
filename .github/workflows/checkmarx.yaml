@@ -131,7 +131,9 @@ jobs:
           if [ "${{ vars.CHECKMARX_TEAM }}" == '' ]; then echo "Error: CHECKMARX_TEAM was not set"; exit 1; fi
           echo "${{ vars.CHECKMARX_TEAM }}"
           projname=$(echo ${{ inputs.project }} | tr / -); echo "projname=$projname" >> $GITHUB_OUTPUT
-          test -f build.sbt && echo "build_sbt=true" >> $GITHUB_OUTPUT
+          build_sbt=false
+          test -f build.sbt && build_sbt=true
+          echo "build_sbt=$build_sbt" >> $GITHUB_OUTPUT
           build_python=false
           for a in Pipfile pyproject.toml */Pipfile */pyproject.toml;do test -f $a && build_python=true;done
           echo "build_python=$build_python" >> $GITHUB_OUTPUT
@@ -142,7 +144,7 @@ jobs:
           echo "build_poetry_path=$build_poetry_path" >> $GITHUB_OUTPUT
           if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
           python3 -m pip install virtualenv
-          echo "Detected: build_python=$build_python build_poetry=$build_poetry build_poetry_path=$build_poetry_path build_sbt=true"
+          echo "Detected: build_python=$build_python build_poetry=$build_poetry build_poetry_path=$build_poetry_path build_sbt=$build_sbt"
           echo "Environment complete."
 
       - name: Remove unneeded files
@@ -151,18 +153,18 @@ jobs:
           find . -name __tests__ -o -name __mocks__ -print0 | xargs -0 rm -rf
 
       - name: Setup Scala
-        if: steps.setup_env.outputs.build_sbt
+        if: steps.setup_env.outputs.build_sbt == true
         uses: retentionscience/setup-scala@v14
         with:
           java-version: ${{ inputs.scala_java_version }}
 
       - name: Setup Pyenv
-        if: steps.setup_env.outputs.build_python
+        if: steps.setup_env.outputs.build_python == true
         id: setup-pyenv
         uses: retentionscience/pyenv-action@v14
 
       - name: Install poetry
-        if: steps.setup_env.outputs.build_poetry
+        if: steps.setup_env.outputs.build_poetry == true
         id: setup-poetry
         run: make -C ${{ steps.setup_env.outputs.build_poetry_path }} compile
 
