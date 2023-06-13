@@ -153,18 +153,18 @@ jobs:
           find . -name __tests__ -o -name __mocks__ -print0 | xargs -0 rm -rf
 
       - name: Setup Scala
-        if: steps.setup_env.outputs.build_sbt == true
+        if: steps.setup_env.outputs.build_sbt == "true"
         uses: retentionscience/setup-scala@v14
         with:
           java-version: ${{ inputs.scala_java_version }}
 
       - name: Setup Pyenv
-        if: steps.setup_env.outputs.build_python == true
+        if: steps.setup_env.outputs.build_python == "true"
         id: setup-pyenv
         uses: retentionscience/pyenv-action@v14
 
       - name: Install poetry
-        if: steps.setup_env.outputs.build_poetry == true
+        if: steps.setup_env.outputs.build_poetry == "true"
         id: setup-poetry
         run: make -C ${{ steps.setup_env.outputs.build_poetry_path }} compile
 
