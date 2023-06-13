@@ -133,10 +133,10 @@ jobs:
           projname=$(echo ${{ inputs.project }} | tr / -); echo "projname=$projname" >> $GITHUB_OUTPUT
           test -f build.sbt && echo "build_sbt=true" >> $GITHUB_OUTPUT
           build_python=false
-          for a in Pipfile pyproject.toml */Pipfile */pyproject.toml;do test -f $a && build_python=true
+          for a in Pipfile pyproject.toml */Pipfile */pyproject.toml;do test -f $a && build_python=true;done
           echo "build_python=$build_python" >> $GITHUB_OUTPUT
           build_poetry=false
-          for a in pyproject.toml */pyproject.toml */pyproject.toml;do test -f $a && grep tool.poetry $a && build_poetry=true
+          for a in pyproject.toml */pyproject.toml */pyproject.toml;do test -f $a && grep tool.poetry $a && build_poetry=true;done
           echo "build_poetry=$build_poetry" >> $GITHUB_OUTPUT
           if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
           python3 -m pip install virtualenv
