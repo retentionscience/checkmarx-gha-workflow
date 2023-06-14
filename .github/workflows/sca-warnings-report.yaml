@@ -1,3 +1,4 @@
+name: SCA Warnings
 on:
   workflow_dispatch:
   schedule:
