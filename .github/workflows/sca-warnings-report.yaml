@@ -35,8 +35,8 @@ jobs:
                   | jq --arg project "$project" --arg scanId "$scanid" '.[] += $ARGS.named | .[]'
               done | jq --slurp > sca-warnings.json
 
-    - name: Upload SCA warnings 
-      uses: actions/upload-artifact@v3
-      with:
-          name: sca-warnings.json
-          path: sca-warnings.json
+      - name: Upload SCA warnings 
+        uses: actions/upload-artifact@v3
+        with:
+            name: sca-warnings.json
+            path: sca-warnings.json
