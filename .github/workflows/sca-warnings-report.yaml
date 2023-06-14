@@ -4,6 +4,13 @@ on:
     # * is a special character in YAML so you have to quote this string
     - cron:  '24 4 * * 1' # Mondays
 
+jobs:
+  sca-warnings:
+    name: SCA Warnings Report
+    runs-on: [self-hosted]
+    concurrency:
+      group: checkmarx-sca-warnings
+    steps:
       - name: Fetch SCA Resolver scan warnings
         id: scaresolver-warnings
         run: |
