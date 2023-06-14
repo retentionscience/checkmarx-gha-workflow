@@ -228,5 +228,7 @@ jobs:
             ![Logo](https://user-images.githubusercontent.com/23239410/92153465-ff743900-ee2c-11ea-9c8d-8141e38feb41.png)
             **Checkmarx SCA - Scan Summary**
             ${{ steps.scaresolver.outputs.sca-scan-summary }}
+            ```json
             ${{ steps.scaresolver-warnings.outputs.sca-scan-warnings }}
+            ```
           comment_tag: sca_resolver_decoration
