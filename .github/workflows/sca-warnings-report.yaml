@@ -8,9 +8,6 @@ on:
 jobs:
   scawarnings:
     name: SCA Warnings Report
-    runs-on: [self-hosted]
-    concurrency:
-      group: checkmarx-sca-warnings
     steps:
       - name: Fetch SCA Resolver scan warnings
         id: scaresolver-warnings
