@@ -198,7 +198,8 @@ jobs:
             exit_code=${PIPESTATUS[0]}
             exit $exit_code
 
-      - name: Verify SCA Resolver parsed manifests
+      - name: Fetch SCA Resolver scan warnings
+        id: scaresolver-warnings
         run: |
           scanid=${{ steps.scaresolver.outputs.sca-scan-id }}
           access_token=$(curl -s 'https://platform.checkmarx.net/identity/connect/token' \
@@ -213,7 +214,11 @@ jobs:
             echo "Failed to fetch access token"
             exit 1
           fi
-          curl -s -H "Authorization: bearer $access_token" "https://api-sca.checkmarx.net/risk-management/riskReports/$scanid/warnings" | jq
+          comment=$(curl -s -H "Authorization: bearer $access_token" "https://api-sca.checkmarx.net/risk-management/riskReports/$scanid/warnings" | jq .[])
+          echo "$comment"
+          echo 'sca-scan-warnings<<EOF' >> $GITHUB_OUTPUT
+          echo "$comment" >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
 
       - name: PR Decoration
         if: always()
@@ -223,4 +228,5 @@ jobs:
             ![Logo](https://user-images.githubusercontent.com/23239410/92153465-ff743900-ee2c-11ea-9c8d-8141e38feb41.png)
             **Checkmarx SCA - Scan Summary**
             ${{ steps.scaresolver.outputs.sca-scan-summary }}
+            ${{ steps.scaresolver-warnings.outputs.sca-scan-warnings }}
           comment_tag: sca_resolver_decoration
