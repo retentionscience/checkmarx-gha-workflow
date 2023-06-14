@@ -178,6 +178,15 @@ jobs:
             wget --quiet "https://sca-downloads.s3.amazonaws.com/cli/latest/ScaResolver-linux64.tar.gz"
             tar -xvf ScaResolver-linux64.tar.gz -C ${{ github.workspace }}/SCAResolver
             ${{ github.workspace }}/SCAResolver/ScaResolver -s '${{ inputs.sca_scan_path != '' && inputs.sca_scan_path || github.workspace }}' -n '${{ steps.setup_env.outputs.projname }}' -a '${{ vars.CHECKMARX_SCA_TENANT }}' -u '${{ vars.CHECKMARX_SCA_USERNAME }}' -p '${{ secrets.CHECKMARX_SCA_PASSWORD }}' -t '${{ vars.CHECKMARX_TEAM }}' --log-level '${{ inputs.sca_log_level }}' ${{ inputs.sca_params }} 2>&1 | tee scaresolver.log
+            scanid=$(grep 'Program "Scan Id: ' scaresolver.log | sed -e 's/Program "Scan Id: //' -e 's/"//')
+            if [ -z "scanid" ];then
+               msg="Error: Failed to parse scanid from scaresolver.log"
+               echo "$msg"
+               echo "sca-scan-summary=$msg" >> $GITHUB_OUTPUT
+               exit 1
+            fi
+            echo "sca-scan-id=$scanid" >> $GITHUB_OUTPUT
+
             comment=$(cat scaresolver.log | sed -n '/### Scan Summary ###/,/^Full report available at/p' | grep -v '####')
             if [ -z "$comment" ];then
                comment="***SCA Resolver has probably failed.***"
@@ -187,6 +196,23 @@ jobs:
             echo 'EOF' >> $GITHUB_OUTPUT
             exit_code=${PIPESTATUS[0]}
             exit $exit_code
+
+      - name: Verify SCA Resolver parsed manifests
+        run: |
+          scanid=${{ steps.scaresolver.outputs.sca-scan-id }}
+          access_token=$(curl -s 'https://platform.checkmarx.net/identity/connect/token' \
+              --data-urlencode "username=${{ vars.CHECKMARX_SCA_USERNAME }}" \
+              --data-urlencode "password=${{ secrets.CHECKMARX_SCA_PASSWORD }}" \
+              --data-urlencode "acr_values=Tenant:${{ vars.CHECKMARX_SCA_TENANT }}" \
+              --data-urlencode "scope=sca_api" \
+              --data-urlencode "client_id=sca_resource_owner" \
+              --data-urlencode "grant_type=password" | jq -r '.access_token')
+
+          if [ -z "$access_token" ];then
+            echo "Failed to fetch access token"
+            exit 1
+          fi
+          curl -s -H "Authorization: bearer $access_token" "https://api-sca.checkmarx.net/risk-management/riskReports/$scanid/warnings" | jq
 
       - name: PR Decoration
         if: always()
