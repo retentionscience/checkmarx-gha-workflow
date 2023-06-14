@@ -26,6 +26,7 @@ jobs:
             echo "Failed to fetch access token"
             exit 1
           fi
+          curl -s -X GET https://api-sca.checkmarx.net/risk-management/projects -H "Authorization: bearer $access_token"
           curl -s -X GET https://api-sca.checkmarx.net/risk-management/projects -H "Authorization: bearer $access_token" \
             | jq -r '.[] | select(.name|test("retentionscience")) | "\(.name) \(.latestScanId)"' \
             | while read project scanid;do
