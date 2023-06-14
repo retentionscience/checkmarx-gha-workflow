@@ -6,7 +6,7 @@ on:
     - cron:  '24 4 * * 1' # Mondays
 
 jobs:
-  sca-warnings:
+  scawarnings:
     name: SCA Warnings Report
     runs-on: [self-hosted]
     concurrency:
