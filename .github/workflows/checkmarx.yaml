@@ -34,7 +34,7 @@ on:
       localsca:
         required: false
         type: boolean
-        default: false
+        default: true
       params:
         required: false
         type: string
@@ -69,6 +69,8 @@ jobs:
       - name: Verify and configure environment
         id: setup_env
         run: |
+          if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
+          python3 -m pip install virtualenv
           if [ "${{ vars.CHECKMARX_TEAM }}" == '' ]; then echo "Error: CHECKMARX_TEAM was not set"; exit 1; fi
           echo "${{ vars.CHECKMARX_TEAM }}"
           projname=$(echo ${{ inputs.project }} | tr / -); echo "projname=$projname" >> $GITHUB_OUTPUT
