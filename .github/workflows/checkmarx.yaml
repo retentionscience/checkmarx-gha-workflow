@@ -34,7 +34,7 @@ on:
       localsca:
         required: false
         type: boolean
-        default: false
+        default: true
       params:
         required: false
         type: string
