@@ -192,6 +192,8 @@ jobs:
         if: steps.setup_env.outputs.build_npm == 'true'
         id: setup-npm
         uses: actions/setup-node@v3
+        with:
+          check-latest: true
 
       - name: SCA Resolver
         id: scaresolver
