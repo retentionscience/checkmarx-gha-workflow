@@ -148,6 +148,7 @@ jobs:
           build_go=false
           if test -f go.mod;then build_go=true; build_go_version=$(grep '^go ' go.mod | awk '{print $NF}');fi
           echo "build_go=$build_go" >> $GITHUB_OUTPUT
+          echo "build_go_version=$build_go_version" >> $GITHUB_OUTPUT
           echo "Detected: build_python=$build_python build_poetry=$build_poetry build_poetry_path=$build_poetry_path build_sbt=$build_sbt build_go=$build_go"
           echo "Environment complete."
 
