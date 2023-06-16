@@ -145,7 +145,10 @@ jobs:
           echo "build_poetry_path=$build_poetry_path" >> $GITHUB_OUTPUT
           if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
           python3 -m pip install virtualenv
-          echo "Detected: build_python=$build_python build_poetry=$build_poetry build_poetry_path=$build_poetry_path build_sbt=$build_sbt"
+          build_go=false
+          test -f go.mod && build_go=true
+          echo "build_go=$build_go" >> $GITHUB_OUTPUT
+          echo "Detected: build_python=$build_python build_poetry=$build_poetry build_poetry_path=$build_poetry_path build_sbt=$build_sbt build_go=$build_go"
           echo "Environment complete."
 
       - name: Remove unneeded files
@@ -172,6 +175,11 @@ jobs:
         if: steps.setup_env.outputs.build_poetry == 'true'
         id: setup-poetry
         run: make -C ${{ steps.setup_env.outputs.build_poetry_path }} compile
+
+      - name: Install Golang
+        if: steps.setup_env.outputs.build_go == 'true'
+        id: setup-go
+        users: actions/setup-go@v4
 
       - name: SCA Resolver
         id: scaresolver
