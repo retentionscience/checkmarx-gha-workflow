@@ -179,7 +179,7 @@ jobs:
       - name: Install Golang
         if: steps.setup_env.outputs.build_go == 'true'
         id: setup-go
-        user: actions/setup-go@v4
+        uses: actions/setup-go@v4
 
       - name: SCA Resolver
         id: scaresolver
