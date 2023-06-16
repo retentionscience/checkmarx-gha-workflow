@@ -149,6 +149,9 @@ jobs:
           for a in $(find . -name go.mod);do  build_go=true; build_go_version=$(grep '^go ' $a| awk '{print $NF}');done
           echo "build_go=$build_go" >> $GITHUB_OUTPUT
           echo "build_go_version=$build_go_version" >> $GITHUB_OUTPUT
+          build_npm=false
+          echo "build_npm=$build_npm" >> $GITHUB_OUTPUT
+          test -f package.json && build_npm=true
           echo "Detected: build_python=$build_python build_poetry=$build_poetry build_poetry_path=$build_poetry_path build_sbt=$build_sbt build_go=$build_go"
           echo "Environment complete."
 
@@ -184,6 +187,11 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: ${{ steps.setup_env.outputs.build_go_version }}
+
+      - name: Install NPM
+        if: steps.setup_env.outputs.build_npm == 'true'
+        id: setup-npm
+        uses: actions/setup-npm@v3
 
       - name: SCA Resolver
         id: scaresolver
