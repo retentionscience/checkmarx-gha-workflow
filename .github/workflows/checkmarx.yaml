@@ -150,8 +150,8 @@ jobs:
           echo "build_go=$build_go" >> $GITHUB_OUTPUT
           echo "build_go_version=$build_go_version" >> $GITHUB_OUTPUT
           build_npm=false
-          echo "build_npm=$build_npm" >> $GITHUB_OUTPUT
           test -f package.json && build_npm=true
+          echo "build_npm=$build_npm" >> $GITHUB_OUTPUT
           echo "Detected: build_python=$build_python build_poetry=$build_poetry build_poetry_path=$build_poetry_path build_sbt=$build_sbt build_go=$build_go"
           echo "Environment complete."
 
