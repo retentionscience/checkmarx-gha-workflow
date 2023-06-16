@@ -48,7 +48,7 @@ on:
       sca_log_level:
         required: false
         type: string
-        default: Verbose
+        default: Debug
       sca_scan_path:
         required: false
         type: string
