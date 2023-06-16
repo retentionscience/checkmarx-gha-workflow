@@ -191,7 +191,7 @@ jobs:
       - name: Install NPM
         if: steps.setup_env.outputs.build_npm == 'true'
         id: setup-npm
-        uses: actions/setup-npm@v3
+        uses: actions/setup-node@v3
 
       - name: SCA Resolver
         id: scaresolver
