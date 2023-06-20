@@ -38,6 +38,10 @@ on:
       params:
         required: false
         type: string
+      node_version:
+        required: false
+        type: string
+        default: 18
       scala_java_version:
         required: false
         type: string
@@ -188,12 +192,12 @@ jobs:
         with:
           go-version: ${{ steps.setup_env.outputs.build_go_version }}
 
-      - name: Install NPM
+      - name: Install Node
         if: steps.setup_env.outputs.build_npm == 'true'
-        id: setup-npm
+        id: setup-node
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: ${{ inputs.node_version }}
 
       - name: Test NPM package-lock
         if: steps.setup_env.outputs.build_npm == 'true'
