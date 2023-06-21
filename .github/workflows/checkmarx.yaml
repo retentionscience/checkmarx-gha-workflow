@@ -214,14 +214,14 @@ jobs:
       - name: SCA Resolver
         id: scaresolver
         run: |
+            mkdir ${{ github.workspace }}/SCAResolver
+            wget --quiet "https://sca-downloads.s3.amazonaws.com/cli/latest/ScaResolver-linux64.tar.gz"
+            tar -xvf ScaResolver-linux64.tar.gz -C ${{ github.workspace }}/SCAResolver
             python --version
             python3 --version
             which python
             which python3
             pyenv local
-            mkdir ${{ github.workspace }}/SCAResolver
-            wget --quiet "https://sca-downloads.s3.amazonaws.com/cli/latest/ScaResolver-linux64.tar.gz"
-            tar -xvf ScaResolver-linux64.tar.gz -C ${{ github.workspace }}/SCAResolver
             ${{ github.workspace }}/SCAResolver/ScaResolver -s '${{ inputs.sca_scan_path != '' && inputs.sca_scan_path || github.workspace }}' -n '${{ steps.setup_env.outputs.projname }}' -a '${{ vars.CHECKMARX_SCA_TENANT }}' -u '${{ vars.CHECKMARX_SCA_USERNAME }}' -p '${{ secrets.CHECKMARX_SCA_PASSWORD }}' -t '${{ vars.CHECKMARX_TEAM }}' --log-level '${{ inputs.sca_log_level }}' ${{ inputs.sca_params }} 2>&1 | tee scaresolver.log
             scanid=$(grep 'Program "Scan Id: ' scaresolver.log | sed -e 's/.*Program "Scan Id: //' -e 's/"//')
             if [ -z "scanid" ];then
