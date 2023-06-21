@@ -73,6 +73,7 @@ jobs:
       - name: Verify and configure environment
         id: setup_env
         run: |
+          yum -y install libsqlite3x-devel
           if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
           python3 -m pip install virtualenv pipdeptree
           if [ "${{ vars.CHECKMARX_TEAM }}" == '' ]; then echo "Error: CHECKMARX_TEAM was not set"; exit 1; fi
