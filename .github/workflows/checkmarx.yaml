@@ -214,6 +214,7 @@ jobs:
       - name: SCA Resolver
         id: scaresolver
         run: |
+            set -x
             mkdir ${{ github.workspace }}/SCAResolver
             wget --quiet "https://sca-downloads.s3.amazonaws.com/cli/latest/ScaResolver-linux64.tar.gz"
             tar -xvf ScaResolver-linux64.tar.gz -C ${{ github.workspace }}/SCAResolver
