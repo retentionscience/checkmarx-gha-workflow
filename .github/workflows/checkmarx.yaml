@@ -141,7 +141,10 @@ jobs:
           echo "build_sbt=$build_sbt" >> $GITHUB_OUTPUT
           build_python=false
           for a in Pipfile pyproject.toml */Pipfile */pyproject.toml;do test -f $a && build_python=true;done
+          build_python_version=3.8
+          if test -f .python-version;then build_python_version=$(cat .python-version);fi
           echo "build_python=$build_python" >> $GITHUB_OUTPUT
+          echo "build_python_version=$build_python_version" >> $GITHUB_OUTPUT
           build_poetry=false
           build_poetry_path=none
           for a in pyproject.toml */pyproject.toml ;do test -f $a && grep tool.poetry $a && build_poetry=true && build_poetry_path=$(dirname $a);done
@@ -178,6 +181,8 @@ jobs:
         if: steps.setup_env.outputs.build_python == 'true'
         id: setup-pyenv
         uses: retentionscience/pyenv-action@v14
+        with:
+          default: ${{ steps.setup_env.outputs.build_python_version }}
 
       - name: Install poetry
         if: steps.setup_env.outputs.build_poetry == 'true'
