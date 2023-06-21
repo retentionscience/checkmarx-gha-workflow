@@ -199,20 +199,10 @@ jobs:
         with:
           node-version: ${{ inputs.node_version }}
 
-      - name: configure npm
-        if: steps.setup_env.outputs.build_npm == 'true'
-        id: configure-npm
-        run: |
-          echo $PATH
-          which python3
-          pyenv root
-          pyenv versions
-          npm config set python `which python3`;
-
       - name: Test NPM package-lock
         if: steps.setup_env.outputs.build_npm == 'true'
         id: test-npm
-        run: npm ci
+        run: npm config set python `which python3`; npm ci
 
       - name: SCA Resolver
         id: scaresolver
