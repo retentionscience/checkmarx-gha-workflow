@@ -202,7 +202,9 @@ jobs:
       - name: Test NPM package-lock
         if: steps.setup_env.outputs.build_npm == 'true'
         id: test-npm
-        run: npm config set python `which python3`; npm ci
+        run: |
+          npm config set python `which python3` || :  # This can fail for some versions of npm, maybe we don't care.
+          npm ci
 
       - name: SCA Resolver
         id: scaresolver
