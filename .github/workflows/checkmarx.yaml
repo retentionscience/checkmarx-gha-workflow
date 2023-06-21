@@ -73,7 +73,6 @@ jobs:
       - name: Verify and configure environment
         id: setup_env
         run: |
-          yum -y install libsqlite3x-devel
           if test -f Pipfile.lock;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
           python3 -m pip install virtualenv pipdeptree
           if [ "${{ vars.CHECKMARX_TEAM }}" == '' ]; then echo "Error: CHECKMARX_TEAM was not set"; exit 1; fi
@@ -203,7 +202,7 @@ jobs:
       - name: Test NPM package-lock
         if: steps.setup_env.outputs.build_npm == 'true'
         id: test-npm
-        run: npm ci
+        run: echo `which python`; npm config set python `which python`; npm ci
 
       - name: SCA Resolver
         id: scaresolver
