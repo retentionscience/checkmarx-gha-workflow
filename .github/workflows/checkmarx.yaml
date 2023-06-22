@@ -134,8 +134,6 @@ jobs:
           if [ "${{ vars.CHECKMARX_TEAM }}" == '' ]; then echo "Error: CHECKMARX_TEAM was not set"; exit 1; fi
           echo "${{ vars.CHECKMARX_TEAM }}"
           projname=$(echo ${{ inputs.project }} | tr / -); echo "projname=$projname" >> $GITHUB_OUTPUT
-          sudo apt -y install ant ivy
-          sudo ln -sf /usr/share/java/ivy.jar /usr/share/ant/lib/ivy.jar
           build_sbt=false
           test -f build.sbt && build_sbt=true
           echo "build_sbt=$build_sbt" >> $GITHUB_OUTPUT
