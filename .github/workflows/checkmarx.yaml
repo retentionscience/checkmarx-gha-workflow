@@ -201,7 +201,7 @@ jobs:
       - name: Install ivy
         if: hashFiles('ivy.xml') != ''
         id: setup-ivy
-        run: apt -y install ant ivy || :
+        run: apt -y install ant ivy
 
       - name: Install Node
         if: steps.setup_env.outputs.build_npm == 'true'
