@@ -145,7 +145,7 @@ jobs:
           if test -f .python-version;then build_python_version=$(cat .python-version);fi
           echo "build_python=$build_python" >> $GITHUB_OUTPUT
           echo "build_python_version=$build_python_version" >> $GITHUB_OUTPUT
-          if [[ -f Pipfile.lock -a ! -f requirements.txt;then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
+          if [[ -f Pipfile.lock -a ! -f requirements.txt ]];then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
           python3 -m pip install virtualenv # virtualenv for system python, and possibly again for the app's pyenv-managed python
 
           build_poetry=false
