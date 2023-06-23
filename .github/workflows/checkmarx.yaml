@@ -217,6 +217,13 @@ jobs:
               npm ci
           fi
 
+      - name: Set up JDK 11
+        if: hashFile('src/pom.xml') != ''
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: 'adopt'
+
       - name: SCA Resolver
         id: scaresolver
         run: |
@@ -230,7 +237,6 @@ jobs:
             which python3 || :
             pyenv local || :
             export PYTHONPATH=`which python3`
-            sudo apt install maven
             ${{ github.workspace }}/SCAResolver/ScaResolver -s '${{ inputs.sca_scan_path != '' && inputs.sca_scan_path || github.workspace }}' -n '${{ steps.setup_env.outputs.projname }}' -a '${{ vars.CHECKMARX_SCA_TENANT }}' -u '${{ vars.CHECKMARX_SCA_USERNAME }}' -p '${{ secrets.CHECKMARX_SCA_PASSWORD }}' -t '${{ vars.CHECKMARX_TEAM }}' --log-level '${{ inputs.sca_log_level }}' ${{ inputs.sca_params }} 2>&1 | tee scaresolver.log
             scanid=$(grep 'Program "Scan Id: ' scaresolver.log | sed -e 's/.*Program "Scan Id: //' -e 's/"//')
             if [ -z "scanid" ];then
