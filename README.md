@@ -19,10 +19,11 @@ This workflow accepts the following optional inputs with their default values:
   - break_build: false
   - bug_tracker: GITHUBPULL
   - checkmarx_url: https://ctct.checkmarx.net
-  - filter_params: --cx-flow.filterSeverity --cx-flow.filterCategory --cx-flow.thresholds.high=0 --cx-flow.thresholds.medium=0 --cx-flow.thresholds.low=0 --sca.thresholds-score=11 --cx-flow.zip-exclude='\.git\/.*,\.github\/.*'
+  - filter_params: (see .github/workflows/checkmarx.yaml)
   - increment: false
   - params: _none_
   - project: ${{ github.repository }}-PR
+  - remove_unneeded_files: (see .github/workflows/checkmarx.yaml)
   - scanners: sast, sca
   - localsca: true
   - node_version: 18 (only used by localsca mode)
