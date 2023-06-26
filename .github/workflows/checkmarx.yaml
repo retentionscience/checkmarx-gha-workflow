@@ -30,7 +30,7 @@ on:
       filter_params:
         required: false
         type: string
-        default: --cx-flow.filterSeverity --cx-flow.filterCategory --cx-flow.thresholds.high=0 --cx-flow.thresholds.medium=0 --cx-flow.thresholds.low=0 --sca.thresholds-score=11 --cx-flow.zip-exclude='\.git\/.*,\.github\/.*'
+        default: --cx-flow.filterSeverity='High' --cx-flow.filterCategory --cx-flow.thresholds.high=0 --cx-flow.thresholds.medium=0 --cx-flow.thresholds.low=0 --sca.thresholds-score=11 --cx-flow.zip-exclude='\.git\/.*,\.github\/.*'
       localsca:
         required: false
         type: boolean
