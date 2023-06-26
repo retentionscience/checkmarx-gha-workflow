@@ -175,6 +175,12 @@ jobs:
           echo "build_npm=$build_npm" >> $GITHUB_OUTPUT
           echo "build_node_version=$build_node_version" >> $GITHUB_OUTPUT
 
+          build_java=false
+          build_maven=false
+          if [[ -f src/pom.xml ]];then  build_java=true; build_maven=true;fi
+          echo "build_java=$build_java" >> $GITHUB_OUTPUT
+          echo "build_maven=$build_maven" >> $GITHUB_OUTPUT
+
           echo "Detected: build_python=$build_python build_poetry=$build_poetry build_poetry_path=$build_poetry_path build_sbt=$build_sbt build_go=$build_go"
           echo "Environment complete."
 
@@ -217,10 +223,15 @@ jobs:
           node-version: ${{ steps.setup_env.outputs.build_node_version }}
 
       - name: Set up JDK 11
+        if: steps.setup_env.outputs.build_java == 'true'
         uses: actions/setup-java@v3
         with:
           java-version: 11
           distribution: 'adopt'
+
+      - name: Build with maven
+        if: steps.setup_env.outputs.build_maven == 'true'
+        run: mvn --batch-mode --update-snapshots clean install -f src/pom.xml
 
       - name: Test package CI lock
         if: steps.setup_env.outputs.build_npm == 'true'
