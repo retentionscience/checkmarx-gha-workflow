@@ -113,7 +113,7 @@ jobs:
           break_build: ${{ inputs.break_build }}
           bug_tracker: ${{ inputs.bug_tracker }}
           github_token: ${{ steps.setup_env.outputs.github_token }}
-          params: --sca.team=${{ vars.CHECKMARX_TEAM }} --namespace=${{ github.repository_owner }}  --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} ${{ inputs.filter_params }} ${{ inputs.params }}
+          params: --logging.level.org.apache.http.client.protocol=ERROR  --sca.team=${{ vars.CHECKMARX_TEAM }} --namespace=${{ github.repository_owner }}  --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} ${{ inputs.filter_params }} ${{ inputs.params }}
           java_opts: -Xmx4g
 
   sca:
