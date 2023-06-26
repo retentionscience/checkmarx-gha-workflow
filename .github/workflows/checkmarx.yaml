@@ -56,7 +56,7 @@ on:
       sca_scan_path:
         required: false
         type: string
-      removed_unneeded_files:
+      remove_unneeded_files:
         required: false
         type: string
         default: db spec script/data_migrations ./public/images/seconds_animated_60.gif test tests arse-ui/public/manifest.json deploy/cap scripts
