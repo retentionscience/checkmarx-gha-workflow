@@ -93,7 +93,7 @@ jobs:
 
       - name: Remove unneeded files
         run: |
-          rm -rf db spec script/data_migrations ./public/images/seconds_animated_60.gif test tests
+          rm -rf db spec script/data_migrations ./public/images/seconds_animated_60.gif test tests arse-ui/public/manifest.json
           find . -name __tests__ -o -name __mocks__ -print0 | xargs -0 rm -rf
 
       - name: Checkmarx CxFlow Action
@@ -171,7 +171,7 @@ jobs:
 
       - name: Remove unneeded files
         run: |
-          rm -rf db spec script/data_migrations ./public/images/seconds_animated_60.gif test tests
+          rm -rf db spec script/data_migrations ./public/images/seconds_animated_60.gif test tests arse-ui/public/manifest.json
           find . -name __tests__ -o -name __mocks__ -print0 | xargs -0 rm -rf
 
       - name: Setup Scala
