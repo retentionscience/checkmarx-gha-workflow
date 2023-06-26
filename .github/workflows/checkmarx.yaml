@@ -234,6 +234,12 @@ jobs:
           java-version: 11
           distribution: 'adopt'
 
+      - name: Build with maven
+        if: steps.setup_env.outputs.build_maven == 'true'
+        run: ls -al src/pom.xml; mvn --batch-mode --update-snapshots clean install -f src/pom.xml
+        env:
+          AWS_REGION: us-east-1
+
       - name: Test package CI lock
         if: steps.setup_env.outputs.build_npm == 'true'
         id: test-npm
