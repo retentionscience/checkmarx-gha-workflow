@@ -30,6 +30,7 @@ This workflow accepts the following optional inputs with their default values:
   - sca_log_level: Debug (only used by localsca mode)
   - sca_params: _none_ (only used by localsca mode)
   - scala_java_version: adopt@1.8 (only used by localsca mode)
+  - sca_submodules: false (only used by localsca mode)
 
 As an example, if you wanted zip sources, you could pass the optional parameters to cxflow:
 
