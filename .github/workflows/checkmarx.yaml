@@ -231,7 +231,7 @@ jobs:
 
       - name: Build with maven
         if: steps.setup_env.outputs.build_maven == 'true'
-        run: mvn --batch-mode --update-snapshots clean install -f src/pom.xml
+        run: ls -al src/pom.xml; mvn --batch-mode --update-snapshots clean install -f src/pom.xml
 
       - name: Test package CI lock
         if: steps.setup_env.outputs.build_npm == 'true'
