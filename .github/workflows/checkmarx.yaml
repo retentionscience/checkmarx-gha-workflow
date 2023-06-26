@@ -136,7 +136,7 @@ jobs:
           projname=$(echo ${{ inputs.project }} | tr / -); echo "projname=$projname" >> $GITHUB_OUTPUT
 
           build_sbt=false
-          test -f build.sbt && build_sbt=true
+          test -f build.sbt -o -f version.sbt && build_sbt=true
           echo "build_sbt=$build_sbt" >> $GITHUB_OUTPUT
 
           build_python=false
