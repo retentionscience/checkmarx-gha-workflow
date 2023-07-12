@@ -159,6 +159,7 @@ jobs:
           if test -f .python-version;then build_python_version=$(cat .python-version);fi
           echo "build_python=$build_python" >> $GITHUB_OUTPUT
           echo "build_python_version=$build_python_version" >> $GITHUB_OUTPUT
+          echo "pyenv_exec=pyenv env" >> $GITHUB_OUTPUT
           if [[ -f Pipfile.lock && ! -f requirements.txt ]];then jq -r '.default | to_entries[] | .key + .value.version' Pipfile.lock > requirements.txt;fi
           python3 -m pip install virtualenv # virtualenv for system python, and possibly again for the app's pyenv-managed python
 
@@ -265,7 +266,7 @@ jobs:
             which python3 || :
             pyenv local || :
             export PYTHONPATH=`which python3`
-            pyenv exec ${{ github.workspace }}/SCAResolver/ScaResolver -s '${{ inputs.sca_scan_path != '' && inputs.sca_scan_path || github.workspace }}' -n '${{ steps.setup_env.outputs.projname }}' -a '${{ vars.CHECKMARX_SCA_TENANT }}' -u '${{ vars.CHECKMARX_SCA_USERNAME }}' -p '${{ secrets.CHECKMARX_SCA_PASSWORD }}' -t '${{ vars.CHECKMARX_TEAM }}' --log-level '${{ inputs.sca_log_level }}' ${{ inputs.sca_params }} 2>&1 | tee scaresolver.log
+            ${{ steps.setup_env.outputs.pyenv_exec }} ${{ github.workspace }}/SCAResolver/ScaResolver -s '${{ inputs.sca_scan_path != '' && inputs.sca_scan_path || github.workspace }}' -n '${{ steps.setup_env.outputs.projname }}' -a '${{ vars.CHECKMARX_SCA_TENANT }}' -u '${{ vars.CHECKMARX_SCA_USERNAME }}' -p '${{ secrets.CHECKMARX_SCA_PASSWORD }}' -t '${{ vars.CHECKMARX_TEAM }}' --log-level '${{ inputs.sca_log_level }}' ${{ inputs.sca_params }} 2>&1 | tee scaresolver.log
             scanid=$(grep 'Program "Scan Id: ' scaresolver.log | sed -e 's/.*Program "Scan Id: //' -e 's/"//')
             if [ -z "scanid" ];then
                msg="Error: Failed to parse scanid from scaresolver.log"
