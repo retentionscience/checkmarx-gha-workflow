@@ -156,7 +156,7 @@ jobs:
           build_python=false
           for a in .python-version Pipfile pyproject.toml */Pipfile */pyproject.toml;do test -f $a && build_python=true;done
           build_python_version=3.8
-          if test -f .python-version;then build_python_version=$(cat .python-version | head 11); pyenv_exec="pyenv exec";fi
+          if test -f .python-version;then build_python_version=$(cat .python-version | head -1); pyenv_exec="pyenv exec";fi
           echo "build_python=$build_python" >> $GITHUB_OUTPUT
           echo "build_python_version=$build_python_version" >> $GITHUB_OUTPUT
           echo "pyenv_exec=$pyenv_exec" >> $GITHUB_OUTPUT
