@@ -203,7 +203,7 @@ jobs:
       - name: Setup Pyenv
         if: steps.setup_env.outputs.build_python == 'true'
         id: setup-pyenv
-        uses: retentionscience/pyenv-action@v14
+        uses: retentionscience/pyenv-action@v16
         with:
           default: ${{ steps.setup_env.outputs.build_python_version }}
           command: python3 -m pip install virtualenv
